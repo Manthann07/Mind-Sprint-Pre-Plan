@@ -14,6 +14,9 @@ import {
   MenuItem,
   Grid,
 } from '@mui/material';
+import { useSpring, animated } from 'react-spring';
+
+const AnimatedBox = animated(Box);
 
 const Register = () => {
   const navigate = useNavigate();
@@ -32,6 +35,11 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const animation = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,27 +95,30 @@ const Register = () => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Create your HealthXCare Account
-        </Typography>
+    <Container
+      component="main"
+      maxWidth="md"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f0f2f5',
+      }}
+    >
+      <AnimatedBox style={animation}>
         <Paper
+          elevation={6}
           sx={{
-            marginTop: 3,
-            padding: 3,
-            display: 'flex',
-            flexDirection: 'column',
+            padding: 4,
+            borderRadius: 2,
             width: '100%',
           }}
         >
+          <Typography component="h1" variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
+            Create an Account
+          </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
@@ -117,11 +128,11 @@ const Register = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Role</InputLabel>
+                  <InputLabel>I am a...</InputLabel>
                   <Select
                     name="role"
                     value={formData.role}
-                    label="Role"
+                    label="I am a..."
                     onChange={handleChange}
                   >
                     <MenuItem value="patient">Patient</MenuItem>
@@ -172,7 +183,7 @@ const Register = () => {
               </Grid>
               {formData.role === 'doctor' && (
                 <>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       required
                       fullWidth
@@ -182,7 +193,7 @@ const Register = () => {
                       onChange={handleChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       required
                       fullWidth
@@ -194,7 +205,7 @@ const Register = () => {
                   </Grid>
                 </>
               )}
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
@@ -205,7 +216,7 @@ const Register = () => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
@@ -221,10 +232,11 @@ const Register = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              color="primary"
+              sx={{ mt: 3, mb: 2, py: 1.5, backgroundColor: 'primary.main' }}
               disabled={loading}
             >
-              Register
+              {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
             <Button
               fullWidth
@@ -235,7 +247,7 @@ const Register = () => {
             </Button>
           </form>
         </Paper>
-      </Box>
+      </AnimatedBox>
     </Container>
   );
 };

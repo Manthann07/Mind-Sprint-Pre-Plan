@@ -9,7 +9,10 @@ import {
   Box,
   Alert,
 } from '@mui/material';
+import { useSpring, animated } from 'react-spring';
 import { useAuth } from '../context/AuthContext';
+
+const AnimatedBox = animated(Box);
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +23,11 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const animation = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+  });
 
   const handleChange = (e) => {
     setFormData({
@@ -34,44 +42,49 @@ const Login = () => {
     setLoading(true);
 
     const result = await login(formData.email, formData.password);
-    
+
     if (result.success) {
       navigate('/');
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Sign in to HealthXCare
-        </Typography>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f0f2f5',
+      }}
+    >
+      <AnimatedBox style={animation}>
         <Paper
+          elevation={6}
           sx={{
-            marginTop: 3,
-            padding: 3,
+            padding: 4,
             display: 'flex',
             flexDirection: 'column',
-            width: '100%',
+            alignItems: 'center',
+            borderRadius: 2,
           }}
         >
+          <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
+            Welcome Back
+          </Typography>
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
               {error}
             </Alert>
           )}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <TextField
               margin="normal"
               required
@@ -100,10 +113,11 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              color="primary"
+              sx={{ mt: 3, mb: 2, py: 1.5, backgroundColor: 'primary.main' }}
               disabled={loading}
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </Button>
             <Button
               fullWidth
@@ -114,7 +128,7 @@ const Login = () => {
             </Button>
           </form>
         </Paper>
-      </Box>
+      </AnimatedBox>
     </Container>
   );
 };
